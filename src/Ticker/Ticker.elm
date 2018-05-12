@@ -1,7 +1,7 @@
 module Ticker.Ticker exposing (..)
 
 import Debug
-import Html exposing (div)
+import Html exposing (div, span)
 import Html.Attributes as Attrs
 import Html.Events as Events
 import Http
@@ -12,8 +12,10 @@ import Ticker.Api
 
 type alias Model =
     { symbol : String
+    , companyName : String
+    , primaryExchange : String
     , price : Float
-    , startingPrice : Float
+    , openPrice : Float
     , time : Time.Time
     , latestUpdate : Time.Time
     }
@@ -33,9 +35,11 @@ update msg model =
             case result of
                 Ok quote ->
                     { model
-                        | price = quote.latestPrice
+                        | companyName = quote.companyName
+                        , primaryExchange = quote.primaryExchange
+                        , openPrice = quote.open
+                        , price = quote.latestPrice
                         , latestUpdate = quote.latestUpdate
-                        , startingPrice = quote.open
                     }
                         ! []
 
@@ -59,26 +63,57 @@ update msg model =
 
 
 view model =
-    div [ Attrs.class "Ticker" ]
-        [ div
-            [ Attrs.class "TickerCompany" ]
-            [ Html.text model.symbol ]
+    div [ Attrs.class "Ticker card" ]
+        [ div [ Attrs.class "TickerCompanySymbol" ] [ Html.text model.symbol ]
+        , div [ Attrs.class "TickerCompanyName" ] [ Html.text model.companyName ]
         , div
             [ Attrs.class "TickerPrice" ]
-            [ Html.text <| toString model.price ]
+            [ Html.text <|
+                if model.price == 0 then
+                    ""
+                else
+                    toString model.price
+            ]
         , div
-            [ Attrs.class "TickerStartingPrice" ]
-            [ Html.text <| toString model.startingPrice ]
+            [ Attrs.class "TickerOpenPrice" ]
+            [ Html.text <|
+                if model.openPrice == 0 then
+                    ""
+                else
+                    toString model.openPrice
+            ]
         , div
-            [ Attrs.class "TickerTime" ]
-            [ Html.text <| toString <| round <| model.time / 1000 ]
+            [ Attrs.class "TickerChangePercent" ]
+            [ Html.text <| percentChange model.price model.openPrice ]
         ]
 
 
-init : String -> Float -> Float -> ( Model, Cmd Msg )
-init symbol price startingPrice =
-    Model symbol price startingPrice 0 0
-        ! [ Task.perform TimeNow Time.now ]
+percentChange original current =
+    let
+        change =
+            roundToTwoPlaces <| (original - current) / original * 100
+    in
+        case isNaN change of
+            True ->
+                ""
+
+            False ->
+                if change > 0 then
+                    "+" ++ (toString change)
+                else
+                    toString change
+
+
+roundToTwoPlaces : Float -> Float
+roundToTwoPlaces number =
+    toFloat (round (number * 100.0)) / 100
+
+
+init : String -> ( Model, Cmd Msg )
+init symbol =
+    ( Model symbol "" "" 0 0 0 0
+    , Task.perform TimeNow Time.now
+    )
 
 
 subscriptions model =

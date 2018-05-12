@@ -1,0 +1,82 @@
+#Main
+{
+}
+
+#Main > * {
+}
+
+.MainInput input
+{
+}
+
+.MainTickers
+{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.Ticker
+{
+  padding: 1em;
+  display: grid;
+  grid-template:
+    ' r1c1 r1c2 r1c3 ' 1fr
+    ' r2c1 r2c2 r2c3 ' auto
+    / 6fr 1fr 1fr;
+  grid-row-gap: 0.5em;
+  grid-column-gap: 0.75em;
+}
+
+.Ticker
+{
+}
+
+.Ticker .TickerCompanySymbol
+{
+  grid-area: r1c1;
+  color: #333;
+  font-weight: bolder;
+  font-size: 1.5em;
+  text-transform: uppercase;
+}
+
+.Ticker .TickerCompanyName
+{
+  grid-area: r2c1;
+}
+
+.Ticker .TickerPrice
+{
+  grid-area: r1c3;
+  color: #222;
+  font-weight: bold;
+  text-align: right;
+}
+.Ticker .TickerPrice::before
+{
+  content: '$';
+}
+
+.Ticker .TickerOpenPrice
+{
+  grid-area: r1c2;
+  text-align: right;
+  font-weight: lighter;
+}
+.Ticker .TickerOpenPrice::before
+{
+  content: '$';
+}
+
+.Ticker .TickerChangePercent
+{
+  grid-area: r2c3;
+  text-align: right;
+  font-weight: bold;
+}
+
+/* .Ticker .TickerTime */
+/* { */
+/*   grid-area: r2c1; */
+/* } */
