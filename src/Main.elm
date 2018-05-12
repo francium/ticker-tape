@@ -26,7 +26,7 @@ update msg model =
         AddTicker ->
             let
                 ( ticker, subCmd ) =
-                    Ticker.init model.inputText 0 0
+                    Ticker.init model.inputText
             in
                 { model | tickers = Dict.insert model.inputText ticker model.tickers }
                     ! [ Cmd.map (TickerMsg model.inputText) subCmd ]
@@ -113,7 +113,7 @@ init =
     let
         ( symbols, tickerInits ) =
             ( initialSymbols
-            , List.map (\sym -> Ticker.init sym 0 0) initialSymbols
+            , List.map Ticker.init initialSymbols
             )
 
         tickersDict =
