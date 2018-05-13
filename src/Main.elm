@@ -83,7 +83,14 @@ updateTickers key subMsg tickers =
                     Just subMsg ->
                         case subMsg of
                             Ticker.Destroy ->
-                                Dict.remove key tickers ! []
+                                let
+                                    updatedTickers =
+                                        Dict.remove key tickers
+
+                                    keys =
+                                        Dict.keys updatedTickers
+                                in
+                                    updatedTickers ! [ saveSymbols keys ]
 
             Nothing ->
                 tickers ! []
