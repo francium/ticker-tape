@@ -9,6 +9,7 @@
 {
   display: flex;
   justify-content: flex-end;
+  padding: 0.5em;
 }
 
 .MainTickers
@@ -16,6 +17,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  padding-top: 0.67em;
 }
 
 .Ticker
@@ -24,14 +26,10 @@
   display: grid;
   grid-template:
     ' r1c1 r1c2 r1c3 ' 1fr
-    ' r2c1 r2c2 r2c3 ' auto
+    ' r2c1 r2c1 r2c3 ' auto
     / 6fr 1fr 1fr;
   grid-row-gap: 0.5em;
   grid-column-gap: 0.75em;
-}
-
-.Ticker
-{
   padding-right: 2em;
 }
 
@@ -123,4 +121,29 @@
   bottom: 0.25em;
   border-color: #aaa;
   border-left-color: #333;
+}
+
+@media (max-width: 1200px)
+{
+  .Ticker
+  {
+    font-size: 0.7em;
+    width: 19.5em;
+  }
+}
+
+@media (max-width: 640px)
+{
+  .MainTickers
+  {
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: unset;
+    padding: 0.25em 2em;
+  }
+
+  .Ticker
+  {
+    width: 100%;
+  }
 }
