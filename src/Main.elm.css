@@ -147,5 +147,6 @@
   .Ticker
   {
     width: 100%;
+    align-self: unset;
   }
 }
