@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Html
 import Html.Attributes as Attrs
@@ -18,6 +18,7 @@ type Msg
     = TickerMsg String Ticker.Msg -- Key Value
     | AddTicker
     | UpdateInputText String
+    | ReceiveSavedSymbols (List String)
     | Noop
 
 
@@ -29,7 +30,16 @@ update msg model =
                     Ticker.init model.inputText
             in
                 { model | tickers = Dict.insert model.inputText ticker model.tickers }
-                    ! [ Cmd.map (TickerMsg model.inputText) subCmd ]
+                    ! [ Cmd.map (TickerMsg model.inputText) subCmd
+                      , saveSymbols <| (::) model.inputText <| Dict.keys model.tickers
+                      ]
+
+        ReceiveSavedSymbols symbols ->
+            let
+                ( tickers, cmds ) =
+                    initTickers symbols
+            in
+                { model | tickers = tickers } ! [ cmds ]
 
         UpdateInputText name ->
             { model | inputText = name } ! []
@@ -79,18 +89,6 @@ updateTickers key subMsg tickers =
                 tickers ! []
 
 
-
---         updateTickers key subMsg model.tickers
--- in
---     case maybeSubMsg of
---         Just subMsg ->
---             case subMsg of
---                 Ticker.Destroy ->
---
---         Nothing ->
---             { model | tickers = tickers } ! [ cmds ]
-
-
 view model =
     Html.div
         [ Attrs.id "Main" ]
@@ -124,16 +122,11 @@ viewTickers tickers =
         Html.div [ Attrs.class "MainTickers container" ] mappedViews
 
 
-initialSymbols =
-    [ "fb", "aapl", "mtch", "extr" ]
-
-
-init =
+initTickers : List String -> ( Dict.Dict String Ticker.Model, Cmd Msg )
+initTickers symbols =
     let
-        ( symbols, tickerInits ) =
-            ( initialSymbols
-            , List.map Ticker.init initialSymbols
-            )
+        tickerInits =
+            List.map Ticker.init symbols
 
         tickersDict =
             List.map Tuple.first tickerInits
@@ -143,14 +136,14 @@ init =
         tickerCmdsMapped =
             List.map Tuple.second tickerInits
                 |> List.map2 (\sym subCmd -> Cmd.map (TickerMsg sym) subCmd) symbols
-
-        textInput =
-            ""
-
-        model =
-            Model tickersDict textInput
     in
-        model ! tickerCmdsMapped
+        tickersDict ! tickerCmdsMapped
+
+
+init =
+    ( Model Dict.empty ""
+    , loadSymbols Nothing
+    )
 
 
 subscriptions model =
@@ -160,7 +153,24 @@ subscriptions model =
                 (\( key, value ) -> Sub.map (TickerMsg key) (Ticker.subscriptions value))
                 (Dict.toList model.tickers)
     in
-        Sub.batch tickers
+        Sub.batch <| (symbolsPort ReceiveSavedSymbols) :: tickers
+
+
+
+-- Outgoing
+
+
+port saveSymbols : List String -> Cmd msg
+
+
+port loadSymbols : Maybe String -> Cmd msg
+
+
+
+-- Incoming
+
+
+port symbolsPort : (List String -> msg) -> Sub msg
 
 
 main =
