@@ -43,7 +43,6 @@
 .Ticker .TickerCompanySymbol
 {
   grid-area: r1c1;
-  color: #333;
   font-weight: bold;
   font-size: 1.5em;
   text-transform: uppercase;
@@ -57,7 +56,6 @@
 .Ticker .TickerPrice
 {
   grid-area: r1c3;
-  color: #222;
   text-align: right;
   font-size: 1.5em;
 }
@@ -103,8 +101,8 @@
 .Ticker .TickerClose
 {
   position: absolute;
-  right: 18px;
-  top: -7px;
+  right: 1em;
+  top: -0.5em;
   height: 0;
   width: 0;
 }
@@ -114,4 +112,15 @@
   content: "×";
   font-size: 1.5em;
   cursor: pointer;
+}
+
+.Ticker .TickerWaiting
+{
+  position: absolute;
+  height: 0.5em;
+  width: 0.5em;
+  right: 0.25em;
+  bottom: 0.25em;
+  border-color: #aaa;
+  border-left-color: #333;
 }
