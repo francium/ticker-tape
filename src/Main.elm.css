@@ -32,6 +32,7 @@
   grid-column-gap: 0.75em;
   padding-right: 2em;
   background: #eee;
+  align-self: baseline;
 }
 
 .Ticker > *
