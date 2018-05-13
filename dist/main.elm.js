@@ -10328,28 +10328,35 @@ var _user$project$Ticker_Ticker$subscriptions = function (model) {
 	return A2(_elm_lang$core$Time$every, 5 * _elm_lang$core$Time$second, _user$project$Ticker_Ticker$Tick);
 };
 
-var _user$project$Main$initialSymbols = {
-	ctor: '::',
-	_0: 'fb',
-	_1: {
-		ctor: '::',
-		_0: 'aapl',
-		_1: {
-			ctor: '::',
-			_0: 'mtch',
-			_1: {
-				ctor: '::',
-				_0: 'extr',
-				_1: {ctor: '[]'}
-			}
-		}
-	}
-};
+var _user$project$Main$saveSymbols = _elm_lang$core$Native_Platform.outgoingPort(
+	'saveSymbols',
+	function (v) {
+		return _elm_lang$core$Native_List.toArray(v).map(
+			function (v) {
+				return v;
+			});
+	});
+var _user$project$Main$loadSymbols = _elm_lang$core$Native_Platform.outgoingPort(
+	'loadSymbols',
+	function (v) {
+		return (v.ctor === 'Nothing') ? null : v._0;
+	});
+var _user$project$Main$symbolsPort = _elm_lang$core$Native_Platform.incomingPort(
+	'symbolsPort',
+	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string));
 var _user$project$Main$Model = F2(
 	function (a, b) {
 		return {tickers: a, inputText: b};
 	});
+var _user$project$Main$init = {
+	ctor: '_Tuple2',
+	_0: A2(_user$project$Main$Model, _elm_lang$core$Dict$empty, ''),
+	_1: _user$project$Main$loadSymbols(_elm_lang$core$Maybe$Nothing)
+};
 var _user$project$Main$Noop = {ctor: 'Noop'};
+var _user$project$Main$ReceiveSavedSymbols = function (a) {
+	return {ctor: 'ReceiveSavedSymbols', _0: a};
+};
 var _user$project$Main$UpdateInputText = function (a) {
 	return {ctor: 'UpdateInputText', _0: a};
 };
@@ -10405,77 +10412,26 @@ var _user$project$Main$updateTickers = F3(
 				{ctor: '[]'});
 		}
 	});
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p5 = msg;
-		switch (_p5.ctor) {
-			case 'AddTicker':
-				var _p6 = _user$project$Ticker_Ticker$init(model.inputText);
-				var ticker = _p6._0;
-				var subCmd = _p6._1;
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{
-							tickers: A3(_elm_lang$core$Dict$insert, model.inputText, ticker, model.tickers)
-						}),
-					{
-						ctor: '::',
-						_0: A2(
-							_elm_lang$core$Platform_Cmd$map,
-							_user$project$Main$TickerMsg(model.inputText),
-							subCmd),
-						_1: {ctor: '[]'}
-					});
-			case 'UpdateInputText':
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{inputText: _p5._0}),
-					{ctor: '[]'});
-			case 'TickerMsg':
-				var _p7 = A3(_user$project$Main$updateTickers, _p5._0, _p5._1, model.tickers);
-				var tickers = _p7._0;
-				var cmds = _p7._1;
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{tickers: tickers}),
-					{
-						ctor: '::',
-						_0: cmds,
-						_1: {ctor: '[]'}
-					});
-			default:
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					model,
-					{ctor: '[]'});
-		}
-	});
 var _user$project$Main$viewTickers = function (tickers) {
 	var tickerKeysAndViews = A2(
 		_elm_lang$core$List$map,
-		function (_p8) {
-			var _p9 = _p8;
+		function (_p5) {
+			var _p6 = _p5;
 			return {
 				ctor: '_Tuple2',
-				_0: _p9._0,
-				_1: _user$project$Ticker_Ticker$view(_p9._1)
+				_0: _p6._0,
+				_1: _user$project$Ticker_Ticker$view(_p6._1)
 			};
 		},
 		_elm_lang$core$Dict$toList(tickers));
 	var mappedViews = A2(
 		_elm_lang$core$List$map,
-		function (_p10) {
-			var _p11 = _p10;
+		function (_p7) {
+			var _p8 = _p7;
 			return A2(
 				_elm_lang$html$Html$map,
-				_user$project$Main$TickerMsg(_p11._0),
-				_p11._1);
+				_user$project$Main$TickerMsg(_p8._0),
+				_p8._1);
 		},
 		tickerKeysAndViews);
 	return A2(
@@ -10535,15 +10491,8 @@ var _user$project$Main$view = function (model) {
 			}
 		});
 };
-var _user$project$Main$init = function () {
-	var textInput = '';
-	var _p12 = {
-		ctor: '_Tuple2',
-		_0: _user$project$Main$initialSymbols,
-		_1: A2(_elm_lang$core$List$map, _user$project$Ticker_Ticker$init, _user$project$Main$initialSymbols)
-	};
-	var symbols = _p12._0;
-	var tickerInits = _p12._1;
+var _user$project$Main$initTickers = function (symbols) {
+	var tickerInits = A2(_elm_lang$core$List$map, _user$project$Ticker_Ticker$init, symbols);
 	var tickersDict = _elm_lang$core$Dict$fromList(
 		A3(
 			_elm_lang$core$List$map2,
@@ -10553,7 +10502,6 @@ var _user$project$Main$init = function () {
 				}),
 			symbols,
 			A2(_elm_lang$core$List$map, _elm_lang$core$Tuple$first, tickerInits)));
-	var model = A2(_user$project$Main$Model, tickersDict, textInput);
 	var tickerCmdsMapped = A3(
 		_elm_lang$core$List$map2,
 		F2(
@@ -10565,8 +10513,84 @@ var _user$project$Main$init = function () {
 			}),
 		symbols,
 		A2(_elm_lang$core$List$map, _elm_lang$core$Tuple$second, tickerInits));
-	return A2(_elm_lang$core$Platform_Cmd_ops['!'], model, tickerCmdsMapped);
-}();
+	return A2(_elm_lang$core$Platform_Cmd_ops['!'], tickersDict, tickerCmdsMapped);
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p9 = msg;
+		switch (_p9.ctor) {
+			case 'AddTicker':
+				var _p10 = _user$project$Ticker_Ticker$init(model.inputText);
+				var ticker = _p10._0;
+				var subCmd = _p10._1;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tickers: A3(_elm_lang$core$Dict$insert, model.inputText, ticker, model.tickers)
+						}),
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$core$Platform_Cmd$map,
+							_user$project$Main$TickerMsg(model.inputText),
+							subCmd),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Main$saveSymbols(
+								A2(
+									F2(
+										function (x, y) {
+											return {ctor: '::', _0: x, _1: y};
+										}),
+									model.inputText,
+									_elm_lang$core$Dict$keys(model.tickers))),
+							_1: {ctor: '[]'}
+						}
+					});
+			case 'ReceiveSavedSymbols':
+				var _p11 = _user$project$Main$initTickers(_p9._0);
+				var tickers = _p11._0;
+				var cmds = _p11._1;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{tickers: tickers}),
+					{
+						ctor: '::',
+						_0: cmds,
+						_1: {ctor: '[]'}
+					});
+			case 'UpdateInputText':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{inputText: _p9._0}),
+					{ctor: '[]'});
+			case 'TickerMsg':
+				var _p12 = A3(_user$project$Main$updateTickers, _p9._0, _p9._1, model.tickers);
+				var tickers = _p12._0;
+				var cmds = _p12._1;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{tickers: tickers}),
+					{
+						ctor: '::',
+						_0: cmds,
+						_1: {ctor: '[]'}
+					});
+			default:
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{ctor: '[]'});
+		}
+	});
 var _user$project$Main$subscriptions = function (model) {
 	var tickers = A2(
 		_elm_lang$core$List$map,
@@ -10578,7 +10602,12 @@ var _user$project$Main$subscriptions = function (model) {
 				_user$project$Ticker_Ticker$subscriptions(_p14._1));
 		},
 		_elm_lang$core$Dict$toList(model.tickers));
-	return _elm_lang$core$Platform_Sub$batch(tickers);
+	return _elm_lang$core$Platform_Sub$batch(
+		{
+			ctor: '::',
+			_0: _user$project$Main$symbolsPort(_user$project$Main$ReceiveSavedSymbols),
+			_1: tickers
+		});
 };
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{init: _user$project$Main$init, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions, view: _user$project$Main$view})();
