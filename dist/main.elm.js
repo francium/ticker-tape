@@ -10072,17 +10072,14 @@ var _user$project$Ticker_Ticker$roundToTwoPlaces = function (number) {
 };
 var _user$project$Ticker_Ticker$percentChange = F2(
 	function (original, current) {
-		var change = _user$project$Ticker_Ticker$roundToTwoPlaces(((original - current) / original) * 100);
-		var _p0 = _elm_lang$core$Basics$isNaN(change);
-		if (_p0 === true) {
-			return '';
-		} else {
-			return (_elm_lang$core$Native_Utils.cmp(change, 0) > 0) ? A2(
-				_elm_lang$core$Basics_ops['++'],
-				'+',
-				_elm_lang$core$Basics$toString(change)) : _elm_lang$core$Basics$toString(change);
-		}
+		return _user$project$Ticker_Ticker$roundToTwoPlaces(((original - current) / original) * 100);
 	});
+var _user$project$Ticker_Ticker$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {symbol: a, companyName: b, primaryExchange: c, price: d, openPrice: e, priceChangePercent: f, time: g, latestUpdate: h};
+	});
+var _user$project$Ticker_Ticker$Destroy = {ctor: 'Destroy'};
+var _user$project$Ticker_Ticker$RequestDestroy = {ctor: 'RequestDestroy'};
 var _user$project$Ticker_Ticker$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -10097,26 +10094,26 @@ var _user$project$Ticker_Ticker$view = function (model) {
 				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('TickerCompanySymbol'),
-					_1: {ctor: '[]'}
+					_0: _elm_lang$html$Html_Attributes$class('TickerClose'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(_user$project$Ticker_Ticker$RequestDestroy),
+						_1: {ctor: '[]'}
+					}
 				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(model.symbol),
-					_1: {ctor: '[]'}
-				}),
+				{ctor: '[]'}),
 			_1: {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('TickerCompanyName'),
+						_0: _elm_lang$html$Html_Attributes$class('TickerCompanySymbol'),
 						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(model.companyName),
+						_0: _elm_lang$html$Html$text(model.symbol),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -10125,13 +10122,12 @@ var _user$project$Ticker_Ticker$view = function (model) {
 						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('TickerPrice'),
+							_0: _elm_lang$html$Html_Attributes$class('TickerCompanyName'),
 							_1: {ctor: '[]'}
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								_elm_lang$core$Native_Utils.eq(model.price, 0) ? '' : _elm_lang$core$Basics$toString(model.price)),
+							_0: _elm_lang$html$Html$text(model.companyName),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -10140,13 +10136,17 @@ var _user$project$Ticker_Ticker$view = function (model) {
 							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('TickerOpenPrice'),
-								_1: {ctor: '[]'}
+								_0: _elm_lang$html$Html_Attributes$class('TickerPrice'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$title('Latest price'),
+									_1: {ctor: '[]'}
+								}
 							},
 							{
 								ctor: '::',
 								_0: _elm_lang$html$Html$text(
-									_elm_lang$core$Native_Utils.eq(model.openPrice, 0) ? '' : _elm_lang$core$Basics$toString(model.openPrice)),
+									_elm_lang$core$Native_Utils.eq(model.price, 0) ? '' : _elm_lang$core$Basics$toString(model.price)),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -10155,75 +10155,110 @@ var _user$project$Ticker_Ticker$view = function (model) {
 								_elm_lang$html$Html$div,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('TickerChangePercent'),
-									_1: {ctor: '[]'}
+									_0: _elm_lang$html$Html_Attributes$class('TickerOpenPrice'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$title('Open price'),
+										_1: {ctor: '[]'}
+									}
 								},
 								{
 									ctor: '::',
 									_0: _elm_lang$html$Html$text(
-										A2(_user$project$Ticker_Ticker$percentChange, model.price, model.openPrice)),
+										_elm_lang$core$Native_Utils.eq(model.openPrice, 0) ? '' : _elm_lang$core$Basics$toString(model.openPrice)),
 									_1: {ctor: '[]'}
 								}),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class(
+											A2(
+												F2(
+													function (x, y) {
+														return A2(_elm_lang$core$Basics_ops['++'], x, y);
+													}),
+												'TickerChangePercent ',
+												(_elm_lang$core$Native_Utils.cmp(model.priceChangePercent, 0) > 0) ? 'TickerChangePercentPositive' : ((_elm_lang$core$Native_Utils.cmp(model.priceChangePercent, 0) < 0) ? 'TickerChangePercentNegative' : ''))),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text(
+											(_elm_lang$core$Native_Utils.cmp(model.priceChangePercent, 0) > 0) ? A2(
+												F2(
+													function (x, y) {
+														return A2(_elm_lang$core$Basics_ops['++'], x, y);
+													}),
+												'+',
+												_elm_lang$core$Basics$toString(model.priceChangePercent)) : _elm_lang$core$Basics$toString(model.priceChangePercent)),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
 			}
 		});
 };
-var _user$project$Ticker_Ticker$Model = F7(
-	function (a, b, c, d, e, f, g) {
-		return {symbol: a, companyName: b, primaryExchange: c, price: d, openPrice: e, time: f, latestUpdate: g};
-	});
 var _user$project$Ticker_Ticker$QuoteUpdate = function (a) {
 	return {ctor: 'QuoteUpdate', _0: a};
 };
 var _user$project$Ticker_Ticker$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
 			case 'QuoteUpdate':
-				var _p2 = _p1._0;
-				if (_p2.ctor === 'Ok') {
-					var _p3 = _p2._0;
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						_elm_lang$core$Native_Utils.update(
+				var _p1 = _p0._0;
+				if (_p1.ctor === 'Ok') {
+					var _p2 = _p1._0;
+					return {
+						ctor: '_Tuple3',
+						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{companyName: _p3.companyName, primaryExchange: _p3.primaryExchange, openPrice: _p3.open, price: _p3.latestPrice, latestUpdate: _p3.latestUpdate}),
-						{ctor: '[]'});
+							{
+								companyName: _p2.companyName,
+								primaryExchange: _p2.primaryExchange,
+								openPrice: _p2.open,
+								price: _p2.latestPrice,
+								latestUpdate: _p2.latestUpdate,
+								priceChangePercent: A2(_user$project$Ticker_Ticker$percentChange, _p2.latestPrice, _p2.open)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none,
+						_2: _elm_lang$core$Maybe$Nothing
+					};
 				} else {
-					var err_ = A2(_elm_lang$core$Debug$log, 'Error getting quote', _p2._0);
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						model,
-						{ctor: '[]'});
+					var err_ = A2(_elm_lang$core$Debug$log, 'Error getting quote', _p1._0);
+					return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _elm_lang$core$Maybe$Nothing};
 				}
-			case 'PriceChange':
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{price: _p1._0}),
-					{ctor: '[]'});
 			case 'Tick':
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
+				return {
+					ctor: '_Tuple3',
+					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{time: _p1._0 - model.latestUpdate}),
-					{
-						ctor: '::',
-						_0: A2(_user$project$Ticker_Api$getQuote, _user$project$Ticker_Ticker$QuoteUpdate, model.symbol),
-						_1: {ctor: '[]'}
-					});
+						{time: _p0._0 - model.latestUpdate}),
+					_1: A2(_user$project$Ticker_Api$getQuote, _user$project$Ticker_Ticker$QuoteUpdate, model.symbol),
+					_2: _elm_lang$core$Maybe$Nothing
+				};
+			case 'TimeNow':
+				return {
+					ctor: '_Tuple3',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{latestUpdate: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none,
+					_2: _elm_lang$core$Maybe$Nothing
+				};
 			default:
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{latestUpdate: _p1._0}),
-					{ctor: '[]'});
+				return {
+					ctor: '_Tuple3',
+					_0: model,
+					_1: _elm_lang$core$Platform_Cmd$none,
+					_2: _elm_lang$core$Maybe$Just(_user$project$Ticker_Ticker$Destroy)
+				};
 		}
 	});
 var _user$project$Ticker_Ticker$TimeNow = function (a) {
@@ -10232,7 +10267,7 @@ var _user$project$Ticker_Ticker$TimeNow = function (a) {
 var _user$project$Ticker_Ticker$init = function (symbol) {
 	return {
 		ctor: '_Tuple2',
-		_0: A7(_user$project$Ticker_Ticker$Model, symbol, '', '', 0, 0, 0, 0),
+		_0: A8(_user$project$Ticker_Ticker$Model, symbol, '', '', 0, 0, 0, 0, 0),
 		_1: A2(_elm_lang$core$Task$perform, _user$project$Ticker_Ticker$TimeNow, _elm_lang$core$Time$now)
 	};
 };
@@ -10241,9 +10276,6 @@ var _user$project$Ticker_Ticker$Tick = function (a) {
 };
 var _user$project$Ticker_Ticker$subscriptions = function (model) {
 	return A2(_elm_lang$core$Time$every, 5 * _elm_lang$core$Time$second, _user$project$Ticker_Ticker$Tick);
-};
-var _user$project$Ticker_Ticker$PriceChange = function (a) {
-	return {ctor: 'PriceChange', _0: a};
 };
 
 var _user$project$Main$initialSymbols = {
@@ -10290,23 +10322,32 @@ var _user$project$Main$updateTickers = F3(
 		}();
 		var _p1 = maybeUpdated;
 		if (_p1.ctor === 'Just') {
-			return A2(
-				_elm_lang$core$Platform_Cmd_ops['!'],
-				A3(
-					_elm_lang$core$Dict$update,
-					key,
-					function (_p2) {
-						return _elm_lang$core$Maybe$Just(_p1._0._0);
-					},
-					tickers),
-				{
-					ctor: '::',
-					_0: A2(
-						_elm_lang$core$Platform_Cmd$map,
-						_user$project$Main$TickerMsg(key),
-						_p1._0._1),
-					_1: {ctor: '[]'}
-				});
+			var _p2 = _p1._0._2;
+			if (_p2.ctor === 'Nothing') {
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					A3(
+						_elm_lang$core$Dict$update,
+						key,
+						function (_p3) {
+							return _elm_lang$core$Maybe$Just(_p1._0._0);
+						},
+						tickers),
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$core$Platform_Cmd$map,
+							_user$project$Main$TickerMsg(key),
+							_p1._0._1),
+						_1: {ctor: '[]'}
+					});
+			} else {
+				var _p4 = _p2._0;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					A2(_elm_lang$core$Dict$remove, key, tickers),
+					{ctor: '[]'});
+			}
 		} else {
 			return A2(
 				_elm_lang$core$Platform_Cmd_ops['!'],
@@ -10316,12 +10357,12 @@ var _user$project$Main$updateTickers = F3(
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p3 = msg;
-		switch (_p3.ctor) {
+		var _p5 = msg;
+		switch (_p5.ctor) {
 			case 'AddTicker':
-				var _p4 = _user$project$Ticker_Ticker$init(model.inputText);
-				var ticker = _p4._0;
-				var subCmd = _p4._1;
+				var _p6 = _user$project$Ticker_Ticker$init(model.inputText);
+				var ticker = _p6._0;
+				var subCmd = _p6._1;
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
@@ -10342,12 +10383,12 @@ var _user$project$Main$update = F2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{inputText: _p3._0}),
+						{inputText: _p5._0}),
 					{ctor: '[]'});
 			case 'TickerMsg':
-				var _p5 = A3(_user$project$Main$updateTickers, _p3._0, _p3._1, model.tickers);
-				var tickers = _p5._0;
-				var cmds = _p5._1;
+				var _p7 = A3(_user$project$Main$updateTickers, _p5._0, _p5._1, model.tickers);
+				var tickers = _p7._0;
+				var cmds = _p7._1;
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
@@ -10368,30 +10409,30 @@ var _user$project$Main$update = F2(
 var _user$project$Main$viewTickers = function (tickers) {
 	var tickerKeysAndViews = A2(
 		_elm_lang$core$List$map,
-		function (_p6) {
-			var _p7 = _p6;
+		function (_p8) {
+			var _p9 = _p8;
 			return {
 				ctor: '_Tuple2',
-				_0: _p7._0,
-				_1: _user$project$Ticker_Ticker$view(_p7._1)
+				_0: _p9._0,
+				_1: _user$project$Ticker_Ticker$view(_p9._1)
 			};
 		},
 		_elm_lang$core$Dict$toList(tickers));
 	var mappedViews = A2(
 		_elm_lang$core$List$map,
-		function (_p8) {
-			var _p9 = _p8;
+		function (_p10) {
+			var _p11 = _p10;
 			return A2(
 				_elm_lang$html$Html$map,
-				_user$project$Main$TickerMsg(_p9._0),
-				_p9._1);
+				_user$project$Main$TickerMsg(_p11._0),
+				_p11._1);
 		},
 		tickerKeysAndViews);
 	return A2(
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('MainTickers'),
+			_0: _elm_lang$html$Html_Attributes$class('MainTickers container'),
 			_1: {ctor: '[]'}
 		},
 		mappedViews);
@@ -10410,7 +10451,7 @@ var _user$project$Main$view = function (model) {
 				_elm_lang$html$Html$form,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('MainInput'),
+					_0: _elm_lang$html$Html_Attributes$class('MainInput container'),
 					_1: {
 						ctor: '::',
 						_0: _elm_lang$html$Html_Events$onSubmit(_user$project$Main$AddTicker),
@@ -10446,13 +10487,13 @@ var _user$project$Main$view = function (model) {
 };
 var _user$project$Main$init = function () {
 	var textInput = '';
-	var _p10 = {
+	var _p12 = {
 		ctor: '_Tuple2',
 		_0: _user$project$Main$initialSymbols,
 		_1: A2(_elm_lang$core$List$map, _user$project$Ticker_Ticker$init, _user$project$Main$initialSymbols)
 	};
-	var symbols = _p10._0;
-	var tickerInits = _p10._1;
+	var symbols = _p12._0;
+	var tickerInits = _p12._1;
 	var tickersDict = _elm_lang$core$Dict$fromList(
 		A3(
 			_elm_lang$core$List$map2,
@@ -10479,12 +10520,12 @@ var _user$project$Main$init = function () {
 var _user$project$Main$subscriptions = function (model) {
 	var tickers = A2(
 		_elm_lang$core$List$map,
-		function (_p11) {
-			var _p12 = _p11;
+		function (_p13) {
+			var _p14 = _p13;
 			return A2(
 				_elm_lang$core$Platform_Sub$map,
-				_user$project$Main$TickerMsg(_p12._0),
-				_user$project$Ticker_Ticker$subscriptions(_p12._1));
+				_user$project$Main$TickerMsg(_p14._0),
+				_user$project$Ticker_Ticker$subscriptions(_p14._1));
 		},
 		_elm_lang$core$Dict$toList(model.tickers));
 	return _elm_lang$core$Platform_Sub$batch(tickers);
