@@ -1,4 +1,4 @@
-module Main exposing (..)
+module Main exposing (main)
 
 import Html
 import Html.Attributes as Attrs
@@ -64,19 +64,38 @@ updateTickers key subMsg tickers =
                     Nothing
     in
         case maybeUpdated of
-            Just ( updatedTicker, subCmd ) ->
-                Dict.update key (\_ -> Just updatedTicker) tickers
-                    ! [ Cmd.map (TickerMsg key) subCmd ]
+            Just ( updatedTicker, subCmd, maybeSubMsg ) ->
+                case maybeSubMsg of
+                    Nothing ->
+                        Dict.update key (\_ -> Just updatedTicker) tickers
+                            ! [ Cmd.map (TickerMsg key) subCmd ]
+
+                    Just subMsg ->
+                        case subMsg of
+                            Ticker.Destroy ->
+                                Dict.remove key tickers ! []
 
             Nothing ->
                 tickers ! []
+
+
+
+--         updateTickers key subMsg model.tickers
+-- in
+--     case maybeSubMsg of
+--         Just subMsg ->
+--             case subMsg of
+--                 Ticker.Destroy ->
+--
+--         Nothing ->
+--             { model | tickers = tickers } ! [ cmds ]
 
 
 view model =
     Html.div
         [ Attrs.id "Main" ]
         [ Html.form
-            [ Attrs.class "MainInput"
+            [ Attrs.class "MainInput container"
             , Events.onSubmit AddTicker
             ]
             [ Html.input
@@ -102,7 +121,7 @@ viewTickers tickers =
                 (\( key, view ) -> Html.map (TickerMsg key) view)
                 tickerKeysAndViews
     in
-        Html.div [ Attrs.class "MainTickers" ] mappedViews
+        Html.div [ Attrs.class "MainTickers container" ] mappedViews
 
 
 initialSymbols =

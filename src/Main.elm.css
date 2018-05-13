@@ -5,8 +5,10 @@
 #Main > * {
 }
 
-.MainInput input
+.MainInput
 {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .MainTickers
@@ -30,13 +32,19 @@
 
 .Ticker
 {
+  padding-right: 2em;
+}
+
+.Ticker > *
+{
+  align-self: center;
 }
 
 .Ticker .TickerCompanySymbol
 {
   grid-area: r1c1;
   color: #333;
-  font-weight: bolder;
+  font-weight: bold;
   font-size: 1.5em;
   text-transform: uppercase;
 }
@@ -50,8 +58,8 @@
 {
   grid-area: r1c3;
   color: #222;
-  font-weight: bold;
   text-align: right;
+  font-size: 1.5em;
 }
 .Ticker .TickerPrice::before
 {
@@ -60,9 +68,10 @@
 
 .Ticker .TickerOpenPrice
 {
-  grid-area: r1c2;
+  grid-area: r2c3;
   text-align: right;
   font-weight: lighter;
+  font-size: 1.5em;
 }
 .Ticker .TickerOpenPrice::before
 {
@@ -71,12 +80,38 @@
 
 .Ticker .TickerChangePercent
 {
-  grid-area: r2c3;
+  grid-area: r1c2;
   text-align: right;
-  font-weight: bold;
+  font-size: 1.5em;
 }
 
-/* .Ticker .TickerTime */
-/* { */
-/*   grid-area: r2c1; */
-/* } */
+.Ticker .TickerChangePercent:after
+{
+  content: '%'
+}
+
+.Ticker .TickerChangePercentNegative
+{
+  color: #c12d00;
+}
+
+.Ticker .TickerChangePercentPositive
+{
+  color: #008f12;
+}
+
+.Ticker .TickerClose
+{
+  position: absolute;
+  right: 18px;
+  top: -7px;
+  height: 0;
+  width: 0;
+}
+
+.Ticker .TickerClose:before
+{
+  content: "×";
+  font-size: 1.5em;
+  cursor: pointer;
+}
