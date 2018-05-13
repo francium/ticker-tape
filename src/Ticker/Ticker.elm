@@ -19,6 +19,8 @@ type alias Model =
     , priceChangePercent : Float
     , time : Time.Time
     , latestUpdate : Time.Time
+    , isWaiting : Bool
+    , inError : Bool
     }
 
 
@@ -46,6 +48,7 @@ update msg model =
                         , price = quote.latestPrice
                         , latestUpdate = quote.latestUpdate
                         , priceChangePercent = percentChange quote.latestPrice quote.open
+                        , isWaiting = False
                       }
                     , Cmd.none
                     , Nothing
@@ -57,7 +60,13 @@ update msg model =
                             Debug.log "Error getting quote" err
                     in
                         -- TODO: Error handling
-                        ( model, Cmd.none, Nothing )
+                        ( { model
+                            | inError = True
+                            , isWaiting = False
+                          }
+                        , Cmd.none
+                        , Nothing
+                        )
 
         Tick time ->
             ( { model | time = time - model.latestUpdate }
@@ -73,8 +82,24 @@ update msg model =
 
 
 view model =
-    div [ Attrs.class "Ticker card" ]
-        [ div [ Attrs.class "TickerClose", Events.onClick RequestDestroy ] []
+    div
+        [ Attrs.class <|
+            (++) "Ticker card " <|
+                if model.inError then
+                    "error"
+                else
+                    ""
+        ]
+        [ div
+            [ Attrs.class <|
+                (++) "TickerWaiting " <|
+                    if model.isWaiting then
+                        "spinner-donut"
+                    else
+                        ""
+            ]
+            []
+        , div [ Attrs.class "TickerClose", Events.onClick RequestDestroy ] []
         , div [ Attrs.class "TickerCompanySymbol" ] [ Html.text model.symbol ]
         , div [ Attrs.class "TickerCompanyName" ] [ Html.text model.companyName ]
         , div
@@ -127,7 +152,7 @@ roundToTwoPlaces number =
 
 init : String -> ( Model, Cmd Msg )
 init symbol =
-    ( Model symbol "" "" 0 0 0 0 0
+    ( Model symbol "" "" 0 0 0 0 0 True False
     , Task.perform TimeNow Time.now
     )
 
