@@ -10074,10 +10074,27 @@ var _user$project$Ticker_Ticker$percentChange = F2(
 	function (original, current) {
 		return _user$project$Ticker_Ticker$roundToTwoPlaces(((original - current) / original) * 100);
 	});
-var _user$project$Ticker_Ticker$Model = F8(
-	function (a, b, c, d, e, f, g, h) {
-		return {symbol: a, companyName: b, primaryExchange: c, price: d, openPrice: e, priceChangePercent: f, time: g, latestUpdate: h};
-	});
+var _user$project$Ticker_Ticker$Model = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return {symbol: a, companyName: b, primaryExchange: c, price: d, openPrice: e, priceChangePercent: f, time: g, latestUpdate: h, isWaiting: i, inError: j};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
 var _user$project$Ticker_Ticker$Destroy = {ctor: 'Destroy'};
 var _user$project$Ticker_Ticker$RequestDestroy = {ctor: 'RequestDestroy'};
 var _user$project$Ticker_Ticker$view = function (model) {
@@ -10085,7 +10102,14 @@ var _user$project$Ticker_Ticker$view = function (model) {
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('Ticker card'),
+			_0: _elm_lang$html$Html_Attributes$class(
+				A2(
+					F2(
+						function (x, y) {
+							return A2(_elm_lang$core$Basics_ops['++'], x, y);
+						}),
+					'Ticker card ',
+					model.inError ? 'error' : '')),
 			_1: {ctor: '[]'}
 		},
 		{
@@ -10094,12 +10118,15 @@ var _user$project$Ticker_Ticker$view = function (model) {
 				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('TickerClose'),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(_user$project$Ticker_Ticker$RequestDestroy),
-						_1: {ctor: '[]'}
-					}
+					_0: _elm_lang$html$Html_Attributes$class(
+						A2(
+							F2(
+								function (x, y) {
+									return A2(_elm_lang$core$Basics_ops['++'], x, y);
+								}),
+							'TickerWaiting ',
+							model.isWaiting ? 'spinner-donut' : '')),
+					_1: {ctor: '[]'}
 				},
 				{ctor: '[]'}),
 			_1: {
@@ -10108,26 +10135,26 @@ var _user$project$Ticker_Ticker$view = function (model) {
 					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('TickerCompanySymbol'),
-						_1: {ctor: '[]'}
+						_0: _elm_lang$html$Html_Attributes$class('TickerClose'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Ticker_Ticker$RequestDestroy),
+							_1: {ctor: '[]'}
+						}
 					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(model.symbol),
-						_1: {ctor: '[]'}
-					}),
+					{ctor: '[]'}),
 				_1: {
 					ctor: '::',
 					_0: A2(
 						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('TickerCompanyName'),
+							_0: _elm_lang$html$Html_Attributes$class('TickerCompanySymbol'),
 							_1: {ctor: '[]'}
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(model.companyName),
+							_0: _elm_lang$html$Html$text(model.symbol),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -10136,17 +10163,12 @@ var _user$project$Ticker_Ticker$view = function (model) {
 							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('TickerPrice'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$title('Latest price'),
-									_1: {ctor: '[]'}
-								}
+								_0: _elm_lang$html$Html_Attributes$class('TickerCompanyName'),
+								_1: {ctor: '[]'}
 							},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text(
-									_elm_lang$core$Native_Utils.eq(model.price, 0) ? '' : _elm_lang$core$Basics$toString(model.price)),
+								_0: _elm_lang$html$Html$text(model.companyName),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -10155,17 +10177,17 @@ var _user$project$Ticker_Ticker$view = function (model) {
 								_elm_lang$html$Html$div,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('TickerOpenPrice'),
+									_0: _elm_lang$html$Html_Attributes$class('TickerPrice'),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$title('Open price'),
+										_0: _elm_lang$html$Html_Attributes$title('Latest price'),
 										_1: {ctor: '[]'}
 									}
 								},
 								{
 									ctor: '::',
 									_0: _elm_lang$html$Html$text(
-										_elm_lang$core$Native_Utils.eq(model.openPrice, 0) ? '' : _elm_lang$core$Basics$toString(model.openPrice)),
+										_elm_lang$core$Native_Utils.eq(model.price, 0) ? '' : _elm_lang$core$Basics$toString(model.price)),
 									_1: {ctor: '[]'}
 								}),
 							_1: {
@@ -10174,29 +10196,49 @@ var _user$project$Ticker_Ticker$view = function (model) {
 									_elm_lang$html$Html$div,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class(
-											A2(
-												F2(
-													function (x, y) {
-														return A2(_elm_lang$core$Basics_ops['++'], x, y);
-													}),
-												'TickerChangePercent ',
-												(_elm_lang$core$Native_Utils.cmp(model.priceChangePercent, 0) > 0) ? 'TickerChangePercentPositive' : ((_elm_lang$core$Native_Utils.cmp(model.priceChangePercent, 0) < 0) ? 'TickerChangePercentNegative' : ''))),
-										_1: {ctor: '[]'}
+										_0: _elm_lang$html$Html_Attributes$class('TickerOpenPrice'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$title('Open price'),
+											_1: {ctor: '[]'}
+										}
 									},
 									{
 										ctor: '::',
 										_0: _elm_lang$html$Html$text(
-											(_elm_lang$core$Native_Utils.cmp(model.priceChangePercent, 0) > 0) ? A2(
-												F2(
-													function (x, y) {
-														return A2(_elm_lang$core$Basics_ops['++'], x, y);
-													}),
-												'+',
-												_elm_lang$core$Basics$toString(model.priceChangePercent)) : _elm_lang$core$Basics$toString(model.priceChangePercent)),
+											_elm_lang$core$Native_Utils.eq(model.openPrice, 0) ? '' : _elm_lang$core$Basics$toString(model.openPrice)),
 										_1: {ctor: '[]'}
 									}),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class(
+												A2(
+													F2(
+														function (x, y) {
+															return A2(_elm_lang$core$Basics_ops['++'], x, y);
+														}),
+													'TickerChangePercent ',
+													(_elm_lang$core$Native_Utils.cmp(model.priceChangePercent, 0) > 0) ? 'TickerChangePercentPositive' : ((_elm_lang$core$Native_Utils.cmp(model.priceChangePercent, 0) < 0) ? 'TickerChangePercentNegative' : ''))),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(
+												(_elm_lang$core$Native_Utils.cmp(model.priceChangePercent, 0) > 0) ? A2(
+													F2(
+														function (x, y) {
+															return A2(_elm_lang$core$Basics_ops['++'], x, y);
+														}),
+													'+',
+													_elm_lang$core$Basics$toString(model.priceChangePercent)) : _elm_lang$core$Basics$toString(model.priceChangePercent)),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
@@ -10225,14 +10267,22 @@ var _user$project$Ticker_Ticker$update = F2(
 								openPrice: _p2.open,
 								price: _p2.latestPrice,
 								latestUpdate: _p2.latestUpdate,
-								priceChangePercent: A2(_user$project$Ticker_Ticker$percentChange, _p2.latestPrice, _p2.open)
+								priceChangePercent: A2(_user$project$Ticker_Ticker$percentChange, _p2.latestPrice, _p2.open),
+								isWaiting: false
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none,
 						_2: _elm_lang$core$Maybe$Nothing
 					};
 				} else {
 					var err_ = A2(_elm_lang$core$Debug$log, 'Error getting quote', _p1._0);
-					return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _elm_lang$core$Maybe$Nothing};
+					return {
+						ctor: '_Tuple3',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{inError: true, isWaiting: false}),
+						_1: _elm_lang$core$Platform_Cmd$none,
+						_2: _elm_lang$core$Maybe$Nothing
+					};
 				}
 			case 'Tick':
 				return {
@@ -10267,7 +10317,7 @@ var _user$project$Ticker_Ticker$TimeNow = function (a) {
 var _user$project$Ticker_Ticker$init = function (symbol) {
 	return {
 		ctor: '_Tuple2',
-		_0: A8(_user$project$Ticker_Ticker$Model, symbol, '', '', 0, 0, 0, 0, 0),
+		_0: _user$project$Ticker_Ticker$Model(symbol)('')('')(0)(0)(0)(0)(0)(true)(false),
 		_1: A2(_elm_lang$core$Task$perform, _user$project$Ticker_Ticker$TimeNow, _elm_lang$core$Time$now)
 	};
 };
