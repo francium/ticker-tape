@@ -10400,10 +10400,16 @@ var _user$project$Main$updateTickers = F3(
 					});
 			} else {
 				var _p4 = _p2._0;
+				var updatedTickers = A2(_elm_lang$core$Dict$remove, key, tickers);
+				var keys = _elm_lang$core$Dict$keys(updatedTickers);
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
-					A2(_elm_lang$core$Dict$remove, key, tickers),
-					{ctor: '[]'});
+					updatedTickers,
+					{
+						ctor: '::',
+						_0: _user$project$Main$saveSymbols(keys),
+						_1: {ctor: '[]'}
+					});
 			}
 		} else {
 			return A2(
