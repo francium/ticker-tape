@@ -10036,7 +10036,7 @@ var _user$project$Ticker_Api$stockQuoteUrlBuilder = function (stock) {
 };
 var _user$project$Ticker_Api$QuoteModel = F6(
 	function (a, b, c, d, e, f) {
-		return {symbol: a, companyName: b, primaryExchange: c, open: d, latestPrice: e, latestUpdate: f};
+		return {symbol: a, companyName: b, primaryExchange: c, previousClose: d, latestPrice: e, latestUpdate: f};
 	});
 var _user$project$Ticker_Api$quoteDataDecoder = A7(
 	_elm_lang$core$Json_Decode$map6,
@@ -10044,7 +10044,7 @@ var _user$project$Ticker_Api$quoteDataDecoder = A7(
 	A2(_elm_lang$core$Json_Decode$field, 'symbol', _elm_lang$core$Json_Decode$string),
 	A2(_elm_lang$core$Json_Decode$field, 'companyName', _elm_lang$core$Json_Decode$string),
 	A2(_elm_lang$core$Json_Decode$field, 'primaryExchange', _elm_lang$core$Json_Decode$string),
-	A2(_elm_lang$core$Json_Decode$field, 'open', _elm_lang$core$Json_Decode$float),
+	A2(_elm_lang$core$Json_Decode$field, 'close', _elm_lang$core$Json_Decode$float),
 	A2(_elm_lang$core$Json_Decode$field, 'latestPrice', _elm_lang$core$Json_Decode$float),
 	A2(_elm_lang$core$Json_Decode$field, 'latestUpdate', _elm_lang$core$Json_Decode$float));
 var _user$project$Ticker_Api$quoteDecoder = A2(
@@ -10084,7 +10084,7 @@ var _user$project$Ticker_Ticker$Model = function (a) {
 							return function (h) {
 								return function (i) {
 									return function (j) {
-										return {symbol: a, companyName: b, primaryExchange: c, price: d, openPrice: e, priceChangePercent: f, time: g, latestUpdate: h, isWaiting: i, inError: j};
+										return {symbol: a, companyName: b, primaryExchange: c, price: d, previousClose: e, priceChangePercent: f, time: g, latestUpdate: h, isWaiting: i, inError: j};
 									};
 								};
 							};
@@ -10206,7 +10206,7 @@ var _user$project$Ticker_Ticker$view = function (model) {
 									{
 										ctor: '::',
 										_0: _elm_lang$html$Html$text(
-											_elm_lang$core$Native_Utils.eq(model.openPrice, 0) ? '' : _elm_lang$core$Basics$toString(model.openPrice)),
+											_elm_lang$core$Native_Utils.eq(model.previousClose, 0) ? '' : _elm_lang$core$Basics$toString(model.previousClose)),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -10264,10 +10264,10 @@ var _user$project$Ticker_Ticker$update = F2(
 							{
 								companyName: _p2.companyName,
 								primaryExchange: _p2.primaryExchange,
-								openPrice: _p2.open,
+								previousClose: _p2.previousClose,
 								price: _p2.latestPrice,
 								latestUpdate: _p2.latestUpdate,
-								priceChangePercent: A2(_user$project$Ticker_Ticker$percentChange, _p2.latestPrice, _p2.open),
+								priceChangePercent: A2(_user$project$Ticker_Ticker$percentChange, _p2.latestPrice, _p2.previousClose),
 								isWaiting: false
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none,
