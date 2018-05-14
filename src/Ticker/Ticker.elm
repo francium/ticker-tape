@@ -15,7 +15,7 @@ type alias Model =
     , companyName : String
     , primaryExchange : String
     , price : Float
-    , openPrice : Float
+    , previousClose : Float
     , priceChangePercent : Float
     , time : Time.Time
     , latestUpdate : Time.Time
@@ -44,10 +44,10 @@ update msg model =
                     ( { model
                         | companyName = quote.companyName
                         , primaryExchange = quote.primaryExchange
-                        , openPrice = quote.open
+                        , previousClose = quote.previousClose
                         , price = quote.latestPrice
                         , latestUpdate = quote.latestUpdate
-                        , priceChangePercent = percentChange quote.latestPrice quote.open
+                        , priceChangePercent = percentChange quote.latestPrice quote.previousClose
                         , isWaiting = False
                       }
                     , Cmd.none
@@ -117,10 +117,10 @@ view model =
             , Attrs.title "Open price"
             ]
             [ Html.text <|
-                if model.openPrice == 0 then
+                if model.previousClose == 0 then
                     ""
                 else
-                    toString model.openPrice
+                    toString model.previousClose
             ]
         , div
             [ Attrs.class <|

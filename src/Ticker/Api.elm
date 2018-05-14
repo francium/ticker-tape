@@ -10,7 +10,7 @@ type alias QuoteModel =
     { symbol : String
     , companyName : String
     , primaryExchange : String
-    , open : Float
+    , previousClose : Float
     , latestPrice : Float
     , latestUpdate : Time.Time
     }
@@ -42,6 +42,6 @@ quoteDataDecoder =
         (Decode.field "symbol" Decode.string)
         (Decode.field "companyName" Decode.string)
         (Decode.field "primaryExchange" Decode.string)
-        (Decode.field "open" Decode.float)
+        (Decode.field "close" Decode.float)
         (Decode.field "latestPrice" Decode.float)
         (Decode.field "latestUpdate" Decode.float)
